@@ -1,0 +1,11 @@
+﻿{
+	"name": "ScoresPhilsBenthicPuritySwap",
+	"version_number": "1.0.0",
+	"website_url": "https://github.com/goldenguy00/BloomPuritySwap",
+	"description": "Swaps tiers and some behavior of Benthic Bloom with that of Purity.",
+	"dependencies": [
+		"bbepis-BepInExPack-5.4.2114",
+		"RiskofThunder-HookGenPatcher-1.2.3",
+		"tristanmcpherson-R2API-5.0.5"
+	]
+}
