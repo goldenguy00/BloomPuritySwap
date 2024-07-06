@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Reflection;
 using UnityEngine;
 
 namespace ScoresPhilsBenthicPuritySwap
@@ -8,19 +6,20 @@ namespace ScoresPhilsBenthicPuritySwap
     internal class Assets
     {
         public static AssetBundle MainAssets { get; private set; }
-        public const string bundleName = "benthicpurityswap";
-
-        public static string AssetBundlePath
-        {
-            get
-            {
-                return System.IO.Path.Combine(System.IO.Path.GetDirectoryName(BenthicPuritySwap.PInfo.Location), bundleName);
-            }
-        }
+        public const string bundleName = "ScoresPhilsBenthicPuritySwap.benthicpurityswap";
 
         public static void Init()
         {
-            MainAssets = AssetBundle.LoadFromFile(AssetBundlePath);
+            using var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(bundleName);
+            if (stream != null)
+            {
+                MainAssets = AssetBundle.LoadFromStream(stream);
+            }
+            else
+            {
+                Log.Error("Critical error encountered when loading asset bundle. aborting procedures.");
+                BenthicPuritySwap.abortPatching = true;
+            }
         }
     }
 }

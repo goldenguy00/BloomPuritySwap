@@ -1,0 +1,9 @@
+{
+  "en": {
+    "ITEM_LUNARBADLUCK_PICKUP": "Reduce your skill cooldowns by 2 seconds. <style=cIsVoid>Corrupts all Alien Heads</style>.",
+    "ITEM_LUNARBADLUCK_DESC": "All skill cooldowns are reduced by <style=cIsUtility>2</style> <style=cStack>(+1 per stack)</style> seconds. <style=cIsVoid>Corrupts all Alien Heads</style>.",
+
+    "ITEM_CLOVERVOID_PICKUP": "Upgrades your items at the start of each stage. <color=#FF7F7F>You are unlucky.</color>",
+    "ITEM_CLOVERVOID_DESC": "<style=cIsUtility>Upgrades 3</style> <style=cStack>(+3 per stack)</style> random items to items of the next <style=cIsUtility>higher rarity</style> at the <style=cIsUtility>start of each stage</style>. All random effects are rolled <style=cIsUtility>+1</style> <style=cStack>(+1 per stack)</style> times for an <style=cIsHealth>unfavorable outcome</style>."
+  }
+}

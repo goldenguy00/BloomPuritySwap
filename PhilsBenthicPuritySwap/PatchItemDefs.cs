@@ -1,6 +1,5 @@
 ﻿using HarmonyLib;
 using RoR2;
-using UnityEngine.AddressableAssets;
 using UnityEngine;
 
 namespace ScoresPhilsBenthicPuritySwap
@@ -17,13 +16,15 @@ namespace ScoresPhilsBenthicPuritySwap
             for (int i = 0; i < newItemDefs.Length; i++)
             {
                 var itemDef = newItemDefs[i];
-
-                if (itemDef.name == RoR2Content.Items.AlienHead.name)
-                    headIdx = i;
-                else if (itemDef.name == RoR2Content.Items.LunarBadLuck.name)
-                    purityIdx = i;
-                else if (itemDef.name == DLC1Content.Items.CloverVoid.name)
-                    bloomIdx = i;
+                if (itemDef)
+                {
+                    if (itemDef.name == RoR2Content.Items.AlienHead.name)
+                        headIdx = i;
+                    else if (itemDef.name == RoR2Content.Items.LunarBadLuck.name)
+                        purityIdx = i;
+                    else if (itemDef.name == DLC1Content.Items.CloverVoid.name)
+                        bloomIdx = i;
+                }
             }
             if (bloomIdx == -1 || purityIdx == -1)
             {
@@ -38,12 +39,6 @@ namespace ScoresPhilsBenthicPuritySwap
 
             var bloomDef = newItemDefs[bloomIdx];
             bloomDef.tier = ItemTier.Lunar;
-            var upperName = bloomDef.name.ToUpper();
-            bloomDef.nameToken = $"PHILSBENTHICPURITYSWAP_{upperName}_NAME";
-            bloomDef.pickupToken = $"PHILSBENTHICPURITYSWAP_{upperName}_PICKUP";
-            bloomDef.descriptionToken = $"PHILSBENTHICPURITYSWAP_{upperName}_DESC";
-            bloomDef.loreToken = $"PHILSBENTHICPURITYSWAP_{upperName}_LORE";
-            bloomDef.pickupModelPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/DLC1/CloverVoid/PickupCloverVoid.prefab").WaitForCompletion();
             bloomDef.pickupIconSprite = Assets.MainAssets.LoadAsset<Sprite>("assets/import/benthicpurityswap_icons/cloverLunar.png");
             newItemDefs[bloomIdx] = bloomDef;
             DLC1Content.Items.CloverVoid = bloomDef;
@@ -53,12 +48,6 @@ namespace ScoresPhilsBenthicPuritySwap
                 purityDef.tier = ItemTier.VoidTier2;
             else
                 purityDef.tier = ItemTier.VoidTier3;
-            upperName = purityDef.name.ToUpper();
-            purityDef.nameToken = $"PHILSBENTHICPURITYSWAP_{upperName}_NAME";
-            purityDef.pickupToken = $"PHILSBENTHICPURITYSWAP_{upperName}_PICKUP";
-            purityDef.descriptionToken = $"PHILSBENTHICPURITYSWAP_{upperName}_DESC";
-            purityDef.loreToken = $"PHILSBENTHICPURITYSWAP_{upperName}_LORE";
-            purityDef.pickupModelPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/LunarBadLuck/PickupStarSeed.prefab").WaitForCompletion();
             purityDef.pickupIconSprite = Assets.MainAssets.LoadAsset<Sprite>("assets/import/benthicpurityswap_icons/voidbadluck.png");
             purityDef.requiredExpansion = bloomDef.requiredExpansion;
             newItemDefs[purityIdx] = purityDef;

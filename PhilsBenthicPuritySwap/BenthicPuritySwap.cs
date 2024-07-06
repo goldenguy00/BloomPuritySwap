@@ -4,28 +4,28 @@ using RoR2;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using R2API.Utils;
+using R2API;
 
 namespace ScoresPhilsBenthicPuritySwap
 {
     [BepInDependency(R2API.R2API.PluginGUID)]
-    [BepInDependency("com.Borbo.GreenAlienHead", BepInDependency.DependencyFlags.SoftDependency)]
     [BepInPlugin(PluginGUID, PluginName, PluginVersion)]
     public class BenthicPuritySwap : BaseUnityPlugin
     {
         public const string PluginGUID    = "com." + PluginAuthor + "." + PluginName;
         public const string PluginAuthor  = "score";
         public const string PluginName    = "ScoresPhilsBenthicPuritySwap";
-        public const string PluginVersion = "1.0.0";
-
-        public static PluginInfo PInfo { get; private set; }
+        public const string PluginVersion = "1.0.1";
 
         public static bool abortPatching = false;
 
         public void Awake()
         {
-            PInfo = Info;
             Log.Init(Logger);
             Assets.Init();
+
+            if (abortPatching)
+                return;
 
             var harm = new Harmony(PluginGUID);
             harm.CreateClassProcessor(typeof(SetItemDefsFix)).Patch();
@@ -34,7 +34,6 @@ namespace ScoresPhilsBenthicPuritySwap
             IL.RoR2.CharacterMaster.OnInventoryChanged += (il) =>
             {
                 var c = new ILCursor(il);
-                //18	0036	ldsfld	class RoR2.ItemDef RoR2.RoR2Content/Items::LunarBadLuck
                 if (c.TryGotoNext(MoveType.Before,
                     i => i.MatchLdsfld("RoR2.RoR2Content/Items", "LunarBadLuck")
                     ))

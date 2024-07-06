@@ -16,8 +16,15 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="benthicpurityswap" />
     <None Remove="BenthicPuritySwap.benthicpurityswap" />
     <None Remove="BloomPuritySwap.bloompurityswap" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="benthicpurityswap">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
   </ItemGroup>
 
   <ItemGroup>
@@ -82,12 +89,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="benthicpurityswap">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="BenthicPuritySwap.language">
+    <None Update="ScoresPhilsBenthicPuritySwap.language">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="copy /Y &quot;$(TargetDir)$(TargetName).dll&quot; &quot;$(SolutionDir)Thunderstore\$(TargetName).dll&quot;&#xD;&#xA;copy /Y &quot;$(TargetDir)*.language&quot; &quot;$(SolutionDir)Thunderstore\&quot;&#xD;&#xA;if exist $(SolutionDir)Thunderstore\Release.zip ( Del $(SolutionDir)Thunderstore\Release.zip)&#xD;&#xA;powershell Compress-Archive -Path '$(SolutionDir)Thunderstore\*.*' -DestinationPath '$(SolutionDir)Thunderstore\Release.zip' -Force" />
+  </Target>
 
 </Project>

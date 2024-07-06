@@ -1,6 +1,7 @@
 ﻿{
 	"name": "ScoresPhilsBenthicPuritySwap",
-	"version_number": "1.0.0",
+	"author": "score",
+	"version_number": "1.0.1",
 	"website_url": "https://github.com/goldenguy00/BloomPuritySwap",
 	"description": "Swaps tiers and some behavior of Benthic Bloom with that of Purity.",
 	"dependencies": [
