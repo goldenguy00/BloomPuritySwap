@@ -1,5 +1,8 @@
 ﻿using HarmonyLib;
 using RoR2;
+using RoR2.ExpansionManagement;
+using System;
+using System.Linq;
 using UnityEngine;
 
 namespace ScoresPhilsBenthicPuritySwap
@@ -7,51 +10,56 @@ namespace ScoresPhilsBenthicPuritySwap
     [HarmonyPatch(typeof(ItemCatalog), nameof(ItemCatalog.SetItemDefs))]
     public class SetItemDefsFix
     {
+
         [HarmonyPrefix]
         private static void Prefix(ref ItemDef[] newItemDefs)
         {
-            int headIdx = -1;
             int purityIdx = -1;
             int bloomIdx = -1;
+            var purityTier = ItemTier.VoidTier3;
+
             for (int i = 0; i < newItemDefs.Length; i++)
             {
                 var itemDef = newItemDefs[i];
                 if (itemDef)
                 {
                     if (itemDef.name == RoR2Content.Items.AlienHead.name)
-                        headIdx = i;
+                        purityTier = itemDef.tier == ItemTier.Tier2 ? ItemTier.VoidTier2 : purityTier;
                     else if (itemDef.name == RoR2Content.Items.LunarBadLuck.name)
                         purityIdx = i;
                     else if (itemDef.name == DLC1Content.Items.CloverVoid.name)
                         bloomIdx = i;
                 }
             }
-            if (bloomIdx == -1 || purityIdx == -1)
+
+            if (purityIdx == -1)
             {
-                Log.Error($"Benthic purity swap ran into a critical error! Bloom index {bloomIdx} or purity index {purityIdx} are invalid! Aborting procedures.");
+                Log.Error($"Benthic purity swap ran into a critical error! Purity index {purityIdx} is invalid! Aborting procedures.");
                 BenthicPuritySwap.abortPatching = true;
                 return;
             }
-            if (headIdx == -1)
+
+            var purityDef = newItemDefs[purityIdx];
+            purityDef.tier = purityTier;
+            purityDef.pickupIconSprite = Assets.MainAssets.LoadAsset<Sprite>("assets/import/benthicpurityswap_icons/voidbadluck.png");
+            purityDef.requiredExpansion = ExpansionCatalog.expansionDefs.FirstOrDefault(ex => ex.name.Contains("DLC1"));
+            Log.Info("expansion" + purityDef.requiredExpansion?.name);
+
+            newItemDefs[purityIdx] = purityDef;
+            RoR2Content.Items.LunarBadLuck = purityDef;
+
+            if (bloomIdx == -1)
             {
-                Log.Error("AlienHead item could not be found in the item catalog. Unintended behaviour may occur...");
+                Log.Error("Benthic bloom could not be found in the item catalog. Unintended behaviour may occur...");
+                return;
             }
 
             var bloomDef = newItemDefs[bloomIdx];
             bloomDef.tier = ItemTier.Lunar;
             bloomDef.pickupIconSprite = Assets.MainAssets.LoadAsset<Sprite>("assets/import/benthicpurityswap_icons/cloverLunar.png");
+
             newItemDefs[bloomIdx] = bloomDef;
             DLC1Content.Items.CloverVoid = bloomDef;
-
-            var purityDef = newItemDefs[purityIdx];
-            if (headIdx != -1 && newItemDefs[headIdx].tier == ItemTier.Tier2)
-                purityDef.tier = ItemTier.VoidTier2;
-            else
-                purityDef.tier = ItemTier.VoidTier3;
-            purityDef.pickupIconSprite = Assets.MainAssets.LoadAsset<Sprite>("assets/import/benthicpurityswap_icons/voidbadluck.png");
-            purityDef.requiredExpansion = bloomDef.requiredExpansion;
-            newItemDefs[purityIdx] = purityDef;
-            RoR2Content.Items.LunarBadLuck = purityDef;
         }
     }
 
@@ -64,6 +72,13 @@ namespace ScoresPhilsBenthicPuritySwap
             if (BenthicPuritySwap.abortPatching)
                 return;
 
+            var newPair = new ItemDef.Pair
+            {
+                itemDef1 = RoR2Content.Items.AlienHead,
+                itemDef2 = RoR2Content.Items.LunarBadLuck
+            };
+
+            bool removed = false;
             for (int i = 0; i < newProviders.Length; i++)
             {
                 if (newProviders[i].relationshipType == DLC1Content.ItemRelationshipTypes.ContagiousItem)
@@ -74,13 +89,21 @@ namespace ScoresPhilsBenthicPuritySwap
                         var pair = itemPairs[j];
                         if (pair.itemDef1 && pair.itemDef2 && pair.itemDef1.name == RoR2Content.Items.Clover.name && pair.itemDef2.name == DLC1Content.Items.CloverVoid.name)
                         {
-                            newProviders[i].relationships[j] = new ItemDef.Pair
-                            {
-                                itemDef1 = RoR2Content.Items.AlienHead,
-                                itemDef2 = RoR2Content.Items.LunarBadLuck
-                            };
+                            newProviders[i].relationships[j] = newPair;
+                            removed = true;
+                            break;
                         }
                     }
+
+                    if (!removed)
+                    {
+                        Log.Error("Unable to find original void pair.");
+                        Array.Resize(ref itemPairs, itemPairs.Length + 1);
+                        itemPairs[itemPairs.Length - 1] = newPair;
+                        newProviders[i].relationships = itemPairs;
+                    }
+
+                    break;
                 }
             }
         }

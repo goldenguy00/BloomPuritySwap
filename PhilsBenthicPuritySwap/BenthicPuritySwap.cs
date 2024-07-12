@@ -4,20 +4,23 @@ using RoR2;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using R2API.Utils;
-using R2API;
+using BepInEx.Bootstrap;
 
 namespace ScoresPhilsBenthicPuritySwap
 {
     [BepInDependency(R2API.R2API.PluginGUID)]
+    [BepInDependency("droppod.lookingglass", BepInDependency.DependencyFlags.SoftDependency)]
     [BepInPlugin(PluginGUID, PluginName, PluginVersion)]
     public class BenthicPuritySwap : BaseUnityPlugin
     {
         public const string PluginGUID    = "com." + PluginAuthor + "." + PluginName;
         public const string PluginAuthor  = "score";
         public const string PluginName    = "ScoresPhilsBenthicPuritySwap";
-        public const string PluginVersion = "1.0.1";
+        public const string PluginVersion = "1.0.2";
 
         public static bool abortPatching = false;
+
+        public static bool isLookingGlassInstalled => Chainloader.PluginInfos.ContainsKey("droppod.lookingglass");
 
         public void Awake()
         {
@@ -46,6 +49,11 @@ namespace ScoresPhilsBenthicPuritySwap
                     Log.Error("IL Hook failed for CharacterMaster_OnInventoryChanged. Unable to swap bad luck from Purity to Benthic Bloom.");
                 }
             };
+
+            if (isLookingGlassInstalled)
+            {
+                RoR2Application.onLoad += Compat.LGCompat;
+            }
         }
     }
 }

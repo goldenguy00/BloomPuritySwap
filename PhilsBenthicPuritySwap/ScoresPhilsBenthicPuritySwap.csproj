@@ -50,6 +50,9 @@
       <HintPath>libs\KdTreeLib.dll</HintPath>
       <Private>false</Private>
     </Reference>
+    <Reference Include="LookingGlass">
+      <HintPath>libs\LookingGlass.dll</HintPath>
+    </Reference>
     <Reference Include="Mono.Security">
       <HintPath>libs\Mono.Security.dll</HintPath>
       <Private>false</Private>
