@@ -31,7 +31,7 @@ namespace ScoresPhilsBenthicPuritySwap
                 bloomDef.descriptions.Add("Luck: ");
                 bloomDef.valueTypes.Add(LG.ItemStatsDef.ValueType.Death);
                 bloomDef.measurementUnits.Add(LG.ItemStatsDef.MeasurementUnits.Number);
-                bloomDef.calculateValuesNew = (luck, stackCount, procChance) => [stackCount + 1, -stackCount];
+                bloomDef.calculateValuesNew = (luck, stackCount, procChance) => [stackCount * 3, -stackCount];
             }
             else
                 Log.Error("Bloom index didnt match lookingglass stats");

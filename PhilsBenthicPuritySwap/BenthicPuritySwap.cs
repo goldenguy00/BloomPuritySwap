@@ -16,7 +16,7 @@ namespace ScoresPhilsBenthicPuritySwap
         public const string PluginGUID    = "com." + PluginAuthor + "." + PluginName;
         public const string PluginAuthor  = "score";
         public const string PluginName    = "ScoresPhilsBenthicPuritySwap";
-        public const string PluginVersion = "1.0.2";
+        public const string PluginVersion = "1.0.3";
 
         public static bool abortPatching = false;
 
